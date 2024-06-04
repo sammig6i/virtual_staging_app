@@ -46,8 +46,11 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	
-	<!-- Camera Usage -->
+	<!-- Camera and Microphone Usage -->
 	<key>NSCameraUsageDescription</key>
-  <string>We need access to your camera to allow you to take photos for virtual staging.</string>
+	<string>We need access to your camera to allow you to take photos for virtual staging.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone to record audio while taking videos.</string>
+
 </dict>
 </plist>
