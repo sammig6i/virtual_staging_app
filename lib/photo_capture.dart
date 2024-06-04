@@ -1,7 +1,13 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class PhotoCaptureScreen extends StatelessWidget {
-  const PhotoCaptureScreen({super.key});
+  const PhotoCaptureScreen({
+    super.key,
+    required this.camera,
+  });
+
+  final CameraDescription camera;
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +17,9 @@ class PhotoCaptureScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFFFF1D0),
         elevation: 0,
       ),
-      body: const Center(
+      body: Center(
         child: Text(
-          'Photo Capture Screen Placeholder',
-          style: TextStyle(fontSize: 24),
+          'Camera: ${camera.name}',
         ),
       ),
     );

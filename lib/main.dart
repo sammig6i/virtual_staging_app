@@ -1,13 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:camera/camera.dart';
 import 'home.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  List<CameraDescription> cameras;
+  CameraDescription? firstCamera;
+
+  try {
+    cameras = await availableCameras();
+
+    if (cameras.isEmpty) {
+      throw Exception('No camera found');
+    }
+
+    firstCamera = cameras.first;
+  } catch (e) {
+    // ignore: avoid_print
+    print('Error: $e');
+  }
+
+  runApp(MyApp(camera: firstCamera));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final CameraDescription? camera;
+  const MyApp({super.key, required this.camera});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +46,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFFFFF1D0),
       ),
-      home: const Home(),
+      home: Home(camera: camera),
     );
   }
 }
