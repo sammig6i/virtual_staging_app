@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
@@ -8,6 +10,7 @@ Future<void> main() async {
 
   List<CameraDescription> cameras;
   CameraDescription? firstCamera;
+  File? pickedImage;
 
   try {
     cameras = await availableCameras();
@@ -18,16 +21,16 @@ Future<void> main() async {
 
     firstCamera = cameras.first;
   } catch (e) {
-    // ignore: avoid_print
     print('Error: $e');
   }
 
-  runApp(MyApp(camera: firstCamera));
+  runApp(MyApp(camera: firstCamera, pickedImage: pickedImage));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key, required this.camera, required this.pickedImage});
   final CameraDescription? camera;
-  const MyApp({super.key, required this.camera});
+  final File? pickedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFFFFF1D0),
       ),
-      home: Home(camera: camera),
+      home: Home(camera: camera, pickedImage: pickedImage),
     );
   }
 }
