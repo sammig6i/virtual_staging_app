@@ -3,13 +3,51 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'photo_capture.dart';
 import 'photo_gallery.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key, required this.camera, required this.pickedImage});
   final CameraDescription? camera;
   final File? pickedImage;
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  Future<void> _takePhoto() async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+    );
+
+    if (!mounted || pickedFile == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoGalleryScreen(
+          pickedImage: File(pickedFile.path),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (!mounted || pickedFile == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoGalleryScreen(
+          pickedImage: File(pickedFile.path),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +91,7 @@ class Home extends StatelessWidget {
                 children: [
                   FloatingActionButton(
                     heroTag: 'takePhoto',
-                    onPressed: camera == null
+                    onPressed: widget.camera == null
                         ? () {
                             showDialog(
                               context: context,
@@ -73,60 +111,23 @@ class Home extends StatelessWidget {
                               },
                             );
                           }
-                        : () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PhotoCaptureScreen(camera: camera!)),
-                            );
-                          },
+                        : _takePhoto,
                     tooltip: 'Take Photo',
                     child: const Icon(Icons.add),
                   ),
                   const SizedBox(width: 20),
-                  _PickPhotoButton(),
+                  FloatingActionButton(
+                    heroTag: 'pickPhoto',
+                    onPressed: _pickImageFromGallery,
+                    tooltip: 'Pick Photo from Gallery',
+                    child: const Icon(Icons.image),
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _PickPhotoButton extends StatefulWidget {
-  @override
-  State<_PickPhotoButton> createState() => _PickPhotoButtonState();
-}
-
-class _PickPhotoButtonState extends State<_PickPhotoButton> {
-  Future<void> _pickImageFromGallery() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null && mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PhotoGalleryScreen(
-            pickedImage: File(pickedFile.path),
-          ),
-        ),
-      );
-    } else {
-      return;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      heroTag: 'pickPhoto',
-      onPressed: _pickImageFromGallery,
-      tooltip: 'Pick Photo from Gallery',
-      child: const Icon(Icons.image),
     );
   }
 }
